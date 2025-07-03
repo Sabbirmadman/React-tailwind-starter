@@ -22,8 +22,8 @@ const UserDetailsPage: React.FC = () => {
         const userIdFromUrl = userId || searchParams.get("userId");
         const mode = searchParams.get("mode");
 
-        // Try to get data from cookies first
-        const tabData = getAndConsumeTabData("_user-details");
+        // Try to get data from cookies first - use the same key as in UserListPage
+        const tabData = getAndConsumeTabData("_user_details");
 
         if (tabData?.type === "USER_DATA") {
             // Data found in cookies

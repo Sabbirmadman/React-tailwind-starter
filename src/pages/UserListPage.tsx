@@ -47,14 +47,24 @@ const UserListPage: React.FC = () => {
     ];
 
     const handleAddUser = () => {
-        handleTabNavigationWithData("/user-details?mode=add")();
+        handleTabNavigationWithData(
+            "/user-details?mode=add",
+            undefined,
+            "_user_details",
+            false // Don't force reload for new user
+        )();
     };
 
     const handleEditUser = (user: User) => {
-        handleTabNavigationWithData(`/user-details/${user.id}`, {
-            type: "USER_DATA",
-            user: user,
-        })();
+        handleTabNavigationWithData(
+            `/user-details/${user.id}`,
+            {
+                type: "USER_DATA",
+                user: user,
+            },
+            "_user_details",
+            true // Force reload when editing different user
+        )();
     };
 
     const columns = [

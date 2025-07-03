@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-import { Card, List, Button, Badge } from "antd";
+import { Card, List, Button, Badge, Tooltip, Popconfirm } from "antd";
 import {
     EyeOutlined,
     CloseOutlined,
     MinusOutlined,
     PlusOutlined,
+    DeleteOutlined,
 } from "@ant-design/icons";
 import { useTabManagement } from "../hooks/useTabManagement";
 
 const TrackedTabsModal: React.FC = () => {
-    const { trackedTabs, getTabDisplayName } = useTabManagement();
-    const [isExpanded, setIsExpanded] = useState(false);
+    const { trackedTabs, getTabDisplayName, removeTrackedWindow } =
+        useTabManagement();
+    const [isExpanded, setIsExpanded] = useState(true);
     const [isVisible, setIsVisible] = useState(true);
 
     const tabEntries = Object.entries(trackedTabs);
+
+    const handleRemoveWindow = (tabKey: string) => {
+        removeTrackedWindow(tabKey);
+    };
 
     if (!isVisible) {
         return null;
@@ -94,8 +100,15 @@ const TrackedTabsModal: React.FC = () => {
                                 size="small"
                                 dataSource={tabEntries}
                                 renderItem={([tabKey, tabInfo]) => (
-                                    <List.Item style={{ padding: "4px 0" }}>
-                                        <div style={{ width: "100%" }}>
+                                    <List.Item
+                                        style={{
+                                            padding: "4px 0",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "flex-start",
+                                        }}
+                                    >
+                                        <div style={{ flex: 1, minWidth: 0 }}>
                                             <div
                                                 style={{
                                                     fontWeight: 500,
@@ -116,9 +129,19 @@ const TrackedTabsModal: React.FC = () => {
                                                                 ? "#52c41a"
                                                                 : "#1890ff",
                                                         display: "inline-block",
+                                                        flexShrink: 0,
                                                     }}
                                                 />
-                                                {getTabDisplayName(tabKey)}
+                                                <span
+                                                    style={{
+                                                        overflow: "hidden",
+                                                        textOverflow:
+                                                            "ellipsis",
+                                                        whiteSpace: "nowrap",
+                                                    }}
+                                                >
+                                                    {getTabDisplayName(tabKey)}
+                                                </span>
                                             </div>
                                             <div
                                                 style={{
@@ -136,6 +159,44 @@ const TrackedTabsModal: React.FC = () => {
                                                 ).toLocaleTimeString()}
                                             </div>
                                         </div>
+                                        {tabInfo.type === "external" && (
+                                            <div
+                                                style={{
+                                                    marginLeft: 8,
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <Popconfirm
+                                                    title="Remove window"
+                                                    description="Are you sure you want to remove this tracked window?"
+                                                    onConfirm={() =>
+                                                        handleRemoveWindow(
+                                                            tabKey
+                                                        )
+                                                    }
+                                                    okText="Yes"
+                                                    cancelText="No"
+                                                    placement="topRight"
+                                                >
+                                                    <Tooltip title="Remove tracked window">
+                                                        <Button
+                                                            type="text"
+                                                            size="small"
+                                                            icon={
+                                                                <DeleteOutlined />
+                                                            }
+                                                            style={{
+                                                                color: "#ff4d4f",
+                                                                fontSize: 10,
+                                                                width: 20,
+                                                                height: 20,
+                                                                minWidth: 20,
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                </Popconfirm>
+                                            </div>
+                                        )}
                                     </List.Item>
                                 )}
                             />
