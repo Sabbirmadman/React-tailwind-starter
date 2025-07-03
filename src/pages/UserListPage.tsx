@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { useTabManagement } from "../hooks/useTabManagement";
+import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
 import { User } from "./UserDetailsPage";
 
 const UserListPage: React.FC = () => {
@@ -50,8 +50,7 @@ const UserListPage: React.FC = () => {
         handleTabNavigationWithData(
             "/user-details?mode=add",
             undefined,
-            "_user_details",
-            false // Don't force reload for new user
+            "_user_details"
         )();
     };
 
@@ -62,8 +61,7 @@ const UserListPage: React.FC = () => {
                 type: "USER_DATA",
                 user: user,
             },
-            "_user_details",
-            true // Force reload when editing different user
+            "_user_details"
         )();
     };
 
@@ -97,7 +95,7 @@ const UserListPage: React.FC = () => {
             render: (_: any, record: User) => (
                 <Space size="middle">
                     <Button
-                        type="primary"
+                        type="default"
                         size="small"
                         icon={<EditOutlined />}
                         onClick={() => handleEditUser(record)}
@@ -121,7 +119,7 @@ const UserListPage: React.FC = () => {
             >
                 <h2>User List</h2>
                 <Button
-                    type="primary"
+                    type="default"
                     icon={<PlusOutlined />}
                     onClick={handleAddUser}
                 >

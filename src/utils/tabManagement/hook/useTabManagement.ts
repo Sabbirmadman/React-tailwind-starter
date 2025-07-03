@@ -11,7 +11,7 @@ import {
     TabDisplay,
     StoredTabs,
     TabInfo,
-} from "../utils/tabManagement";
+} from "..";
 
 export const useTabManagement = () => {
     const location = useLocation();
@@ -34,66 +34,18 @@ export const useTabManagement = () => {
 
     // Handle tab navigation (simple version)
     const handleTabNavigation = React.useCallback(
-        (path: string, forceReload: boolean = false) =>
-            (e: React.MouseEvent) => {
-                e.preventDefault();
-                tabNavigation.handleNavigation({
-                    path,
-                    forceReload,
-                });
-                refreshTrackedTabs();
-            },
+        (path: string) => (e: React.MouseEvent) => {
+            e.preventDefault();
+            tabNavigation.handleNavigation({
+                path,
+            });
+            refreshTrackedTabs();
+        },
         [tabNavigation, refreshTrackedTabs]
     );
 
     // Handle tab navigation with data
     const handleTabNavigationWithData = React.useCallback(
-        (
-                path: string,
-                data?: any,
-                pageType?: string,
-                forceReload: boolean = false
-            ) =>
-            (e?: React.MouseEvent) => {
-                if (e) e.preventDefault();
-
-                tabNavigation.handleNavigation({
-                    path,
-                    data,
-                    pageType,
-                    forceReload,
-                });
-                refreshTrackedTabs();
-            },
-        [tabNavigation, refreshTrackedTabs]
-    );
-
-    // Convenience methods for clearer reload control
-    const handleTabNavigationNoReload = React.useCallback(
-        (path: string) => (e: React.MouseEvent) => {
-            e.preventDefault();
-            tabNavigation.handleNavigation({
-                path,
-                forceReload: false, // Never reload, just focus or navigate
-            });
-            refreshTrackedTabs();
-        },
-        [tabNavigation, refreshTrackedTabs]
-    );
-
-    const handleTabNavigationWithReload = React.useCallback(
-        (path: string) => (e: React.MouseEvent) => {
-            e.preventDefault();
-            tabNavigation.handleNavigation({
-                path,
-                forceReload: true, // Always reload
-            });
-            refreshTrackedTabs();
-        },
-        [tabNavigation, refreshTrackedTabs]
-    );
-
-    const handleTabNavigationWithDataNoReload = React.useCallback(
         (path: string, data?: any, pageType?: string) =>
             (e?: React.MouseEvent) => {
                 if (e) e.preventDefault();
@@ -102,23 +54,6 @@ export const useTabManagement = () => {
                     path,
                     data,
                     pageType,
-                    forceReload: false, // Never reload, just focus or navigate
-                });
-                refreshTrackedTabs();
-            },
-        [tabNavigation, refreshTrackedTabs]
-    );
-
-    const handleTabNavigationWithDataWithReload = React.useCallback(
-        (path: string, data?: any, pageType?: string) =>
-            (e?: React.MouseEvent) => {
-                if (e) e.preventDefault();
-
-                tabNavigation.handleNavigation({
-                    path,
-                    data,
-                    pageType,
-                    forceReload: true, // Always reload
                 });
                 refreshTrackedTabs();
             },
@@ -195,10 +130,6 @@ export const useTabManagement = () => {
     return {
         handleTabNavigation,
         handleTabNavigationWithData,
-        handleTabNavigationNoReload,
-        handleTabNavigationWithReload,
-        handleTabNavigationWithDataNoReload,
-        handleTabNavigationWithDataWithReload,
         getStoredTabs: () => TabStorage.getStoredTabs(),
         updateStoredTabs: (
             tabKey: string,

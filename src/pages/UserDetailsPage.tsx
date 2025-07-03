@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { getAndConsumeTabData } from "../hooks/useTabManagement";
+import { getAndConsumeTabData } from "../utils/tabManagement/hook/useTabManagement";
 import UserForm from "../components/UserForm";
 
 export interface User {

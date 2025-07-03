@@ -95,7 +95,7 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
             </Form.Item>
 
             <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading}>
+                <Button type="default" htmlType="submit" loading={loading}>
                     {user?.id ? "Update User" : "Create User"}
                 </Button>
                 <Button

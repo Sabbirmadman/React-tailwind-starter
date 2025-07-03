@@ -1,14 +1,13 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-import { useTabManagement } from "../hooks/useTabManagement";
-import TrackedTabsModal from "./TrackedTabsModal";
+import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
+import TrackedTabsModal from "../utils/tabManagement/trackerui/TrackedTabsModal";
 
 const { Header, Content } = Layout;
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { handleTabNavigationNoReload, handleTabNavigationWithReload } =
-        useTabManagement();
+    const { handleTabNavigation } = useTabManagement();
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
@@ -38,19 +37,9 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                         <Menu.Item key="userlist-newtab">
                             <a
                                 href="/users"
-                                onClick={handleTabNavigationNoReload("/users")}
+                                onClick={handleTabNavigation("/users")}
                             >
-                                User List (No Reload)
-                            </a>
-                        </Menu.Item>
-                        <Menu.Item key="userlist-newtab-reload">
-                            <a
-                                href="/users"
-                                onClick={handleTabNavigationWithReload(
-                                    "/users"
-                                )}
-                            >
-                                User List (Force Reload)
+                                User List
                             </a>
                         </Menu.Item>
                     </Menu.SubMenu>
@@ -58,21 +47,9 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                         <Menu.Item key="productlist-newtab">
                             <a
                                 href="/products"
-                                onClick={handleTabNavigationNoReload(
-                                    "/products"
-                                )}
+                                onClick={handleTabNavigation("/products")}
                             >
-                                Product List (No Reload)
-                            </a>
-                        </Menu.Item>
-                        <Menu.Item key="productlist-newtab-reload">
-                            <a
-                                href="/products"
-                                onClick={handleTabNavigationWithReload(
-                                    "/products"
-                                )}
-                            >
-                                Product List (Force Reload)
+                                Product List
                             </a>
                         </Menu.Item>
                     </Menu.SubMenu>
