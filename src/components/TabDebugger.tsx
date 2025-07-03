@@ -4,21 +4,16 @@ import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
 const TabDebugger: React.FC = () => {
     const {
         trackedTabs,
-        handleTabNavigationNoReload,
-        handleTabNavigationWithReload,
+handleTabNavigation
     } = useTabManagement();
 
     const testNoReload = () => {
         console.log("🔍 Testing no reload navigation to /users");
         console.log("📊 Current tracked tabs:", trackedTabs);
-        handleTabNavigationNoReload("/users")({} as React.MouseEvent);
+        handleTabNavigation("/users")({} as React.MouseEvent);
     };
 
-    const testWithReload = () => {
-        console.log("🔄 Testing with reload navigation to /users");
-        console.log("📊 Current tracked tabs:", trackedTabs);
-        handleTabNavigationWithReload("/users")({} as React.MouseEvent);
-    };
+
 
     return (
         <div
@@ -50,9 +45,6 @@ const TabDebugger: React.FC = () => {
             <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
                 <button onClick={testNoReload} style={{ padding: 8 }}>
                     🚫 Test Users (No Reload)
-                </button>
-                <button onClick={testWithReload} style={{ padding: 8 }}>
-                    🔄 Test Users (Force Reload)
                 </button>
             </div>
 

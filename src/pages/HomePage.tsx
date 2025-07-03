@@ -2,7 +2,14 @@ import React from "react";
 import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
 
 const HomePage: React.FC = () => {
-    const { handleTabNavigation } = useTabManagement();
+    const { handleTabNavigation, handleTabNavigationWithData } = useTabManagement();
+
+    // Function to open documentation using tab management
+    const openDocumentation = (docType: string) => {
+        const path = `/docs/${docType}`;
+        const data = { docType, openedAt: new Date().toISOString() };
+        handleTabNavigationWithData(path, data, "_documentation")();
+    };
 
     const demoPages = [
         {
@@ -267,7 +274,8 @@ const HomePage: React.FC = () => {
                             flexWrap: "wrap",
                         }}
                     >
-                        <div
+                        <button
+                            onClick={() => openDocumentation("quick-setup")}
                             style={{
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
@@ -275,11 +283,21 @@ const HomePage: React.FC = () => {
                                 borderRadius: "8px",
                                 fontSize: "14px",
                                 fontWeight: "500",
+                                border: "none",
+                                cursor: "pointer",
+                                transition: "background-color 0.3s ease",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "#0056b3";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "#007bff";
                             }}
                         >
                             📋 QUICK_SETUP.md
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            onClick={() => openDocumentation("implementation-guide")}
                             style={{
                                 padding: "10px 20px",
                                 backgroundColor: "#28a745",
@@ -287,10 +305,19 @@ const HomePage: React.FC = () => {
                                 borderRadius: "8px",
                                 fontSize: "14px",
                                 fontWeight: "500",
+                                border: "none",
+                                cursor: "pointer",
+                                transition: "background-color 0.3s ease",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = "#1e7e34";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "#28a745";
                             }}
                         >
                             📖 IMPLEMENTATION_GUIDE.md
-                        </div>
+                        </button>
                     </div>
                 </div>
 
