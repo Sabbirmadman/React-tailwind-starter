@@ -1,11 +1,5 @@
-const HomePage: React.FC = () => {
-    return (
-        <div className="h-screen">
-            <div className="h-16 bg-white flex justify-center items-center">
-                Home Page
-            </div>
-        </div>
-    );
-};
+import React from "react";
 
-export default HomePage;
+export default function HomePage() {
+    return <div>HomePage</div>;
+}
