@@ -7,8 +7,13 @@ export { WindowManagement } from "./windowManager";
 export { TabNavigation } from "./navigation";
 export { TabDisplay } from "./display";
 
-// Export the main hook
-export { useTabManagement } from "./useTabManagement";
+// Export the main hook and utility functions
+export {
+    useTabManagement,
+    getAndConsumeTabData,
+    storeTabData,
+    default,
+} from "./useTabManagement";
 
 // Export the tab manager
 export { TabManager, createTabManager } from "./tabManager";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
+import { useTabManagement } from "../utils/tabManagement";
 import { User } from "./UserDetailsPage";
 
 const UserListPage: React.FC = () => {

@@ -40,3 +40,9 @@ export interface TabDataEntry {
 export interface TabDataStorage {
     [key: string]: TabDataEntry;
 }
+
+// Generic tab data wrapper
+export interface GenericTabData<T = unknown> {
+    type: string;
+    [key: string]: T | string;
+}

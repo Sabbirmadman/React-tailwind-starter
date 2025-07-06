@@ -1,13 +1,14 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
 import TrackedTabsModal from "../utils/tabManagement/trackerui/TrackedTabsModal";
+import { useTabManagement } from "../utils/tabManagement";
 
 const { Header, Content } = Layout;
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { handleTabNavigation, handleTabNavigationWithData } = useTabManagement();
+    const { handleTabNavigation, handleTabNavigationWithData } =
+        useTabManagement();
 
     const openDocumentation = (docType: string) => {
         const path = `/docs/${docType}`;
@@ -48,25 +49,8 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                 User List
                             </a>
                         </Menu.Item>
-                        <Menu.Item key="posts-newtab">
-                            <a
-                                href="/posts"
-                                onClick={handleTabNavigation("/posts")}
-                            >
-                                All Posts
-                            </a>
-                        </Menu.Item>
                     </Menu.SubMenu>
-                    <Menu.SubMenu key="photos" title="Photos">
-                        <Menu.Item key="photos-newtab">
-                            <a
-                                href="/photos"
-                                onClick={handleTabNavigation("/photos")}
-                            >
-                                Photo Gallery
-                            </a>
-                        </Menu.Item>
-                    </Menu.SubMenu>
+
                     <Menu.SubMenu key="todos" title="Todos">
                         <Menu.Item key="todos-newtab">
                             <a
@@ -77,16 +61,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                             </a>
                         </Menu.Item>
                     </Menu.SubMenu>
-                    <Menu.SubMenu key="comments" title="Comments">
-                        <Menu.Item key="comments-newtab">
-                            <a
-                                href="/comments"
-                                onClick={handleTabNavigation("/comments")}
-                            >
-                                All Comments
-                            </a>
-                        </Menu.Item>
-                    </Menu.SubMenu>
+
                     <Menu.SubMenu key="docs" title="📚 Docs">
                         <Menu.Item key="quick-setup">
                             <a

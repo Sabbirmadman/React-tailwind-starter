@@ -1,19 +1,14 @@
 import React from "react";
-import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
+import { useTabManagement } from "../utils/tabManagement";
 
 const TabDebugger: React.FC = () => {
-    const {
-        trackedTabs,
-handleTabNavigation
-    } = useTabManagement();
+    const { trackedTabs, handleTabNavigation } = useTabManagement();
 
     const testNoReload = () => {
         console.log("🔍 Testing no reload navigation to /users");
         console.log("📊 Current tracked tabs:", trackedTabs);
         handleTabNavigation("/users")({} as React.MouseEvent);
     };
-
-
 
     return (
         <div

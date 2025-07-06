@@ -2,7 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { TabManager } from "./tabManager";
 import { TabStorage } from "./storage";
-import { StoredTabs, TabNavigationOptions, TabDisplayMap } from "./types";
+import {
+    StoredTabs,
+    TabNavigationOptions,
+    TabDisplayMap,
+    TabInfo,
+} from "./types";
 
 /**
  * Simplified React hook for tab management
@@ -153,6 +158,27 @@ export const useTabManagement = () => {
     const handleTabNavigation = createNavigationHandler;
     const handleTabNavigationWithData = createNavigationHandlerWithData;
 
+    /**
+     * Convenience methods for clearer intent
+     */
+    const handleTabNavigationNoReload = (path: string) =>
+        createNavigationHandler(path, false);
+
+    const handleTabNavigationWithReload = (path: string) =>
+        createNavigationHandler(path, true);
+
+    const handleTabNavigationWithDataNoReload = (
+        path: string,
+        data?: unknown,
+        pageType?: string
+    ) => createNavigationHandlerWithData(path, data, pageType, false);
+
+    const handleTabNavigationWithDataWithReload = (
+        path: string,
+        data?: unknown,
+        pageType?: string
+    ) => createNavigationHandlerWithData(path, data, pageType, true);
+
     return {
         // State
         trackedTabs,
@@ -163,6 +189,12 @@ export const useTabManagement = () => {
         createNavigationHandlerWithData,
         handleTabNavigation, // Legacy
         handleTabNavigationWithData, // Legacy
+
+        // Convenience methods for clearer intent
+        handleTabNavigationNoReload,
+        handleTabNavigationWithReload,
+        handleTabNavigationWithDataNoReload,
+        handleTabNavigationWithDataWithReload,
 
         // Display methods
         getTabDisplayName,
@@ -176,6 +208,17 @@ export const useTabManagement = () => {
         removeTrackedWindow,
         refreshTrackedTabs,
 
+        // Storage methods for backward compatibility
+        getStoredTabs: () => TabStorage.getStoredTabs(),
+        updateStoredTabs: (
+            tabKey: string,
+            action: "add" | "remove",
+            tabInfo?: Partial<TabInfo>
+        ) => {
+            TabStorage.updateStoredTabs(tabKey, action, tabInfo);
+            refreshTrackedTabs();
+        },
+
         // Utilities
         formatTimestamp: tabManager.formatTimestamp,
         formatRelativeTime: tabManager.formatRelativeTime,
@@ -187,6 +230,19 @@ export const useTabManagement = () => {
         navigationManager: tabManager.navigation,
         displayManager: tabManager.display,
     };
+};
+
+// Export utility functions for direct use
+export const getAndConsumeTabData = <T = unknown>(tabKey: string): T | null => {
+    const data = TabStorage.getTabData(tabKey) as T | null;
+    if (data) {
+        TabStorage.cleanupTabData(tabKey);
+    }
+    return data;
+};
+
+export const storeTabData = (tabKey: string, data: unknown): void => {
+    TabStorage.storeTabData(tabKey, data);
 };
 
 export default useTabManagement;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { getAndConsumeTabData } from "../utils/tabManagement/hook/useTabManagement";
+import { getAndConsumeTabData } from "../utils/tabManagement";
 import UserForm from "../components/UserForm";
 
 export interface User {
@@ -9,6 +9,12 @@ export interface User {
     email: string;
     phone: string;
     department: string;
+}
+
+// Local interface for this page's tab data
+interface UserDetailsTabData {
+    type: "USER_DATA";
+    user: User;
 }
 
 const UserDetailsPage: React.FC = () => {
@@ -23,7 +29,8 @@ const UserDetailsPage: React.FC = () => {
         const mode = searchParams.get("mode");
 
         // Try to get data from cookies first - use the same key as in UserListPage
-        const tabData = getAndConsumeTabData("_user_details");
+        const tabData =
+            getAndConsumeTabData<UserDetailsTabData>("_user_details");
 
         if (tabData?.type === "USER_DATA") {
             // Data found in cookies

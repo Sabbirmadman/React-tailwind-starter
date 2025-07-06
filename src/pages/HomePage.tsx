@@ -1,8 +1,9 @@
 import React from "react";
-import { useTabManagement } from "../utils/tabManagement/hook/useTabManagement";
+import { useTabManagement } from "../utils/tabManagement";
 
 const HomePage: React.FC = () => {
-    const { handleTabNavigation, handleTabNavigationWithData } = useTabManagement();
+    const { handleTabNavigation, handleTabNavigationWithData } =
+        useTabManagement();
 
     // Function to open documentation using tab management
     const openDocumentation = (docType: string) => {
@@ -288,16 +289,20 @@ const HomePage: React.FC = () => {
                                 transition: "background-color 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#0056b3";
+                                e.currentTarget.style.backgroundColor =
+                                    "#0056b3";
                             }}
                             onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#007bff";
+                                e.currentTarget.style.backgroundColor =
+                                    "#007bff";
                             }}
                         >
                             📋 QUICK_SETUP.md
                         </button>
                         <button
-                            onClick={() => openDocumentation("implementation-guide")}
+                            onClick={() =>
+                                openDocumentation("implementation-guide")
+                            }
                             style={{
                                 padding: "10px 20px",
                                 backgroundColor: "#28a745",
@@ -310,10 +315,12 @@ const HomePage: React.FC = () => {
                                 transition: "background-color 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = "#1e7e34";
+                                e.currentTarget.style.backgroundColor =
+                                    "#1e7e34";
                             }}
                             onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#28a745";
+                                e.currentTarget.style.backgroundColor =
+                                    "#28a745";
                             }}
                         >
                             📖 IMPLEMENTATION_GUIDE.md

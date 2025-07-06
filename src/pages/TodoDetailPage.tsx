@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {
-    getAndConsumeTabData,
-    useTabManagement,
-} from "../utils/tabManagement/hook/useTabManagement";
+import { getAndConsumeTabData, useTabManagement } from "../utils/tabManagement";
 
 interface Todo {
     id: number;
@@ -24,6 +21,13 @@ interface User {
     };
 }
 
+// Local interface for this page's tab data
+interface TodoDetailTabData {
+    type: "TODO_DETAIL_DATA";
+    todo: Todo;
+    user?: User;
+}
+
 const TodoDetailPage: React.FC = () => {
     const { todoId } = useParams<{ todoId: string }>();
     const { handleTabNavigationWithData } = useTabManagement();
@@ -38,12 +42,14 @@ const TodoDetailPage: React.FC = () => {
                 setLoading(true);
 
                 // First, try to get data from tab management system
-                const tabData = getAndConsumeTabData("current_todo_detail");
+                const tabData = getAndConsumeTabData<TodoDetailTabData>(
+                    "current_todo_detail"
+                );
 
                 if (tabData?.type === "TODO_DETAIL_DATA") {
                     // Data was passed from another tab
                     setTodo(tabData.todo);
-                    setUser(tabData.user);
+                    setUser(tabData.user || null);
                 } else if (todoId) {
                     // No tab data, fetch everything from API
                     const todoResponse = await axios.get(
@@ -137,7 +143,8 @@ const TodoDetailPage: React.FC = () => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(250px, 1fr))",
                         gap: "15px",
                         marginTop: "20px",
                     }}
@@ -156,7 +163,9 @@ const TodoDetailPage: React.FC = () => {
                             Status:{" "}
                             <span
                                 style={{
-                                    backgroundColor: todo.completed ? "#28a745" : "#ffc107",
+                                    backgroundColor: todo.completed
+                                        ? "#28a745"
+                                        : "#ffc107",
                                     color: todo.completed ? "white" : "#212529",
                                     padding: "4px 8px",
                                     borderRadius: "12px",
@@ -171,16 +180,36 @@ const TodoDetailPage: React.FC = () => {
 
                     {user && (
                         <div>
-                            <h4 style={{ margin: "0 0 8px 0", color: "#495057" }}>
+                            <h4
+                                style={{
+                                    margin: "0 0 8px 0",
+                                    color: "#495057",
+                                }}
+                            >
                                 Assigned To
                             </h4>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 👤 {user.name}
                             </p>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 📧 {user.email}
                             </p>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 📞 {user.phone}
                             </p>
                             <button
@@ -218,7 +247,9 @@ const TodoDetailPage: React.FC = () => {
                         fontSize: "24px",
                         marginBottom: "20px",
                         color: "#333",
-                        textDecoration: todo.completed ? "line-through" : "none",
+                        textDecoration: todo.completed
+                            ? "line-through"
+                            : "none",
                         opacity: todo.completed ? 0.7 : 1,
                     }}
                 >
@@ -238,7 +269,9 @@ const TodoDetailPage: React.FC = () => {
                             width: "20px",
                             height: "20px",
                             borderRadius: "50%",
-                            backgroundColor: todo.completed ? "#28a745" : "#ffc107",
+                            backgroundColor: todo.completed
+                                ? "#28a745"
+                                : "#ffc107",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -261,15 +294,17 @@ const TodoDetailPage: React.FC = () => {
                 <div
                     style={{
                         backgroundColor: todo.completed ? "#d4edda" : "#fff3cd",
-                        border: `1px solid ${todo.completed ? "#c3e6cb" : "#ffeaa7"}`,
+                        border: `1px solid ${
+                            todo.completed ? "#c3e6cb" : "#ffeaa7"
+                        }`,
                         borderRadius: "6px",
                         padding: "15px",
                         color: todo.completed ? "#155724" : "#856404",
                     }}
                 >
                     <p style={{ margin: "0", fontSize: "16px" }}>
-                        {todo.completed 
-                            ? "This task has been successfully completed! 🎉" 
+                        {todo.completed
+                            ? "This task has been successfully completed! 🎉"
                             : "This task is currently pending and needs to be completed."}
                     </p>
                 </div>
@@ -292,21 +327,42 @@ const TodoDetailPage: React.FC = () => {
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                            gridTemplateColumns:
+                                "repeat(auto-fit, minmax(200px, 1fr))",
                             gap: "15px",
                         }}
                     >
                         <div>
-                            <h4 style={{ margin: "0 0 8px 0", color: "#495057" }}>
+                            <h4
+                                style={{
+                                    margin: "0 0 8px 0",
+                                    color: "#495057",
+                                }}
+                            >
                                 Contact Details
                             </h4>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 👤 {user.name}
                             </p>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 📧 {user.email}
                             </p>
-                            <p style={{ margin: "0 0 5px 0", color: "#6c757d" }}>
+                            <p
+                                style={{
+                                    margin: "0 0 5px 0",
+                                    color: "#6c757d",
+                                }}
+                            >
                                 📞 {user.phone}
                             </p>
                             {user.website && (
@@ -328,7 +384,12 @@ const TodoDetailPage: React.FC = () => {
                         </div>
 
                         <div>
-                            <h4 style={{ margin: "0 0 8px 0", color: "#495057" }}>
+                            <h4
+                                style={{
+                                    margin: "0 0 8px 0",
+                                    color: "#495057",
+                                }}
+                            >
                                 Company
                             </h4>
                             <p style={{ margin: "0", color: "#6c757d" }}>
@@ -386,4 +447,4 @@ const TodoDetailPage: React.FC = () => {
     );
 };
 
-export default TodoDetailPage; 
+export default TodoDetailPage;

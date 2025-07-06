@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useTabManagement } from "../hook/useTabManagement";
+import { useTabManagement } from "../useTabManagement";
 
 const TrackedTabsModal: React.FC = () => {
     const { trackedTabs, getTabDisplayName, removeTrackedWindow } =

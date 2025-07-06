@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-    getAndConsumeTabData,
-    useTabManagement,
-} from "../utils/tabManagement/hook/useTabManagement";
+import { getAndConsumeTabData, useTabManagement } from "../utils/tabManagement";
 
 interface Todo {
     id: number;
@@ -23,13 +20,22 @@ interface User {
     };
 }
 
+// Local interface for this page's tab data
+interface TodoListTabData {
+    type: "TODO_LIST_DATA";
+    todos: Todo[];
+    users: User[];
+}
+
 const TodoListPage: React.FC = () => {
     const { handleTabNavigationWithData } = useTabManagement();
     const [todos, setTodos] = useState<Todo[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
+    const [filter, setFilter] = useState<"all" | "completed" | "pending">(
+        "all"
+    );
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
@@ -38,7 +44,8 @@ const TodoListPage: React.FC = () => {
                 setLoading(true);
 
                 // First, try to get data from tab management system
-                const tabData = getAndConsumeTabData("current_todo_list");
+                const tabData =
+                    getAndConsumeTabData<TodoListTabData>("current_todo_list");
 
                 if (tabData?.type === "TODO_LIST_DATA") {
                     // Data was passed from another tab
@@ -66,7 +73,7 @@ const TodoListPage: React.FC = () => {
     }, []);
 
     const handleViewTodo = (todo: Todo) => {
-        const user = users.find(u => u.id === todo.userId);
+        const user = users.find((u) => u.id === todo.userId);
         handleTabNavigationWithData(
             `/todo/${todo.id}`,
             {
@@ -79,7 +86,7 @@ const TodoListPage: React.FC = () => {
     };
 
     const handleViewUserTodos = (user: User) => {
-        const userTodos = todos.filter(todo => todo.userId === user.id);
+        const userTodos = todos.filter((todo) => todo.userId === user.id);
         handleTabNavigationWithData(
             `/user-todos/${user.id}`,
             {
@@ -92,23 +99,25 @@ const TodoListPage: React.FC = () => {
     };
 
     const getUserName = (userId: number) => {
-        const user = users.find(u => u.id === userId);
+        const user = users.find((u) => u.id === userId);
         return user ? user.name : "Unknown User";
     };
 
-    const filteredTodos = todos.filter(todo => {
-        const matchesFilter = 
-            filter === "all" || 
+    const filteredTodos = todos.filter((todo) => {
+        const matchesFilter =
+            filter === "all" ||
             (filter === "completed" && todo.completed) ||
             (filter === "pending" && !todo.completed);
-        
-        const matchesSearch = todo.title.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
+        const matchesSearch = todo.title
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+
         return matchesFilter && matchesSearch;
     });
 
-    const completedCount = todos.filter(todo => todo.completed).length;
-    const pendingCount = todos.filter(todo => !todo.completed).length;
+    const completedCount = todos.filter((todo) => todo.completed).length;
+    const pendingCount = todos.filter((todo) => !todo.completed).length;
 
     if (loading) {
         return (
@@ -166,7 +175,8 @@ const TodoListPage: React.FC = () => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(200px, 1fr))",
                         gap: "15px",
                         marginTop: "20px",
                     }}
@@ -192,7 +202,14 @@ const TodoListPage: React.FC = () => {
                         </h4>
                         <select
                             value={filter}
-                            onChange={(e) => setFilter(e.target.value as "all" | "completed" | "pending")}
+                            onChange={(e) =>
+                                setFilter(
+                                    e.target.value as
+                                        | "all"
+                                        | "completed"
+                                        | "pending"
+                                )
+                            }
                             style={{
                                 padding: "8px 12px",
                                 borderRadius: "6px",
@@ -261,7 +278,8 @@ const TodoListPage: React.FC = () => {
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+                            gridTemplateColumns:
+                                "repeat(auto-fill, minmax(400px, 1fr))",
                             gap: "20px",
                         }}
                     >
@@ -280,12 +298,16 @@ const TodoListPage: React.FC = () => {
                                     opacity: todo.completed ? 0.7 : 1,
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-2px)";
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(-2px)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 4px 12px rgba(0,0,0,0.15)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = "translateY(0)";
-                                    e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(0)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 1px 3px rgba(0,0,0,0.1)";
                                 }}
                                 onClick={() => handleViewTodo(todo)}
                             >
@@ -295,8 +317,12 @@ const TodoListPage: React.FC = () => {
                                         position: "absolute",
                                         top: "15px",
                                         right: "15px",
-                                        backgroundColor: todo.completed ? "#28a745" : "#ffc107",
-                                        color: todo.completed ? "white" : "#212529",
+                                        backgroundColor: todo.completed
+                                            ? "#28a745"
+                                            : "#ffc107",
+                                        color: todo.completed
+                                            ? "white"
+                                            : "#212529",
                                         borderRadius: "20px",
                                         padding: "4px 12px",
                                         fontSize: "12px",
@@ -335,7 +361,9 @@ const TodoListPage: React.FC = () => {
                                         lineHeight: "1.4",
                                         paddingRight: "80px",
                                         paddingLeft: "40px",
-                                        textDecoration: todo.completed ? "line-through" : "none",
+                                        textDecoration: todo.completed
+                                            ? "line-through"
+                                            : "none",
                                     }}
                                 >
                                     {todo.title}
@@ -353,7 +381,13 @@ const TodoListPage: React.FC = () => {
                                     <p style={{ margin: "0 0 5px 0" }}>
                                         👤 {getUserName(todo.userId)}
                                     </p>
-                                    <p style={{ margin: "0", fontSize: "12px", color: "#007bff" }}>
+                                    <p
+                                        style={{
+                                            margin: "0",
+                                            fontSize: "12px",
+                                            color: "#007bff",
+                                        }}
+                                    >
                                         Click to view details →
                                     </p>
                                 </div>
@@ -380,14 +414,19 @@ const TodoListPage: React.FC = () => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                        gridTemplateColumns:
+                            "repeat(auto-fill, minmax(300px, 1fr))",
                         gap: "15px",
                     }}
                 >
                     {users.slice(0, 10).map((user) => {
-                        const userTodos = todos.filter(todo => todo.userId === user.id);
-                        const userCompleted = userTodos.filter(todo => todo.completed).length;
-                        
+                        const userTodos = todos.filter(
+                            (todo) => todo.userId === user.id
+                        );
+                        const userCompleted = userTodos.filter(
+                            (todo) => todo.completed
+                        ).length;
+
                         return (
                             <div
                                 key={user.id}
@@ -400,23 +439,44 @@ const TodoListPage: React.FC = () => {
                                     transition: "all 0.2s",
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-2px)";
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(-2px)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 4px 12px rgba(0,0,0,0.15)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = "translateY(0)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(0)";
                                     e.currentTarget.style.boxShadow = "none";
                                 }}
                                 onClick={() => handleViewUserTodos(user)}
                             >
-                                <h4 style={{ margin: "0 0 8px 0", color: "#333" }}>
+                                <h4
+                                    style={{
+                                        margin: "0 0 8px 0",
+                                        color: "#333",
+                                    }}
+                                >
                                     👤 {user.name}
                                 </h4>
-                                <p style={{ margin: "0 0 5px 0", color: "#666", fontSize: "14px" }}>
+                                <p
+                                    style={{
+                                        margin: "0 0 5px 0",
+                                        color: "#666",
+                                        fontSize: "14px",
+                                    }}
+                                >
                                     📧 {user.email}
                                 </p>
-                                <p style={{ margin: "0 0 5px 0", color: "#666", fontSize: "14px" }}>
-                                    📊 {userTodos.length} todos ({userCompleted} completed)
+                                <p
+                                    style={{
+                                        margin: "0 0 5px 0",
+                                        color: "#666",
+                                        fontSize: "14px",
+                                    }}
+                                >
+                                    📊 {userTodos.length} todos ({userCompleted}{" "}
+                                    completed)
                                 </p>
                                 <button
                                     style={{
@@ -441,4 +501,4 @@ const TodoListPage: React.FC = () => {
     );
 };
 
-export default TodoListPage; 
+export default TodoListPage;

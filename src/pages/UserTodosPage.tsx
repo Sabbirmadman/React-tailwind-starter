@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {
-    getAndConsumeTabData,
-    useTabManagement,
-} from "../utils/tabManagement/hook/useTabManagement";
+import { getAndConsumeTabData, useTabManagement } from "../utils/tabManagement";
 
 interface Todo {
     id: number;
@@ -24,6 +21,13 @@ interface User {
     };
 }
 
+// Local interface for this page's tab data
+interface UserTodosTabData {
+    type: "USER_TODOS_DATA";
+    user: User;
+    todos: Todo[];
+}
+
 const UserTodosPage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
     const { handleTabNavigationWithData } = useTabManagement();
@@ -31,7 +35,9 @@ const UserTodosPage: React.FC = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
+    const [filter, setFilter] = useState<"all" | "completed" | "pending">(
+        "all"
+    );
 
     useEffect(() => {
         const initializeData = async () => {
@@ -39,7 +45,10 @@ const UserTodosPage: React.FC = () => {
                 setLoading(true);
 
                 // First, try to get data from tab management system
-                const tabData = getAndConsumeTabData("current_user_todos");
+                const tabData =
+                    getAndConsumeTabData<UserTodosTabData>(
+                        "current_user_todos"
+                    );
 
                 if (tabData?.type === "USER_TODOS_DATA") {
                     // Data was passed from another tab
@@ -48,8 +57,12 @@ const UserTodosPage: React.FC = () => {
                 } else if (userId) {
                     // No tab data, fetch everything from API
                     const [userResponse, todosResponse] = await Promise.all([
-                        axios.get(`https://jsonplaceholder.typicode.com/users/${userId}`),
-                        axios.get(`https://jsonplaceholder.typicode.com/todos?userId=${userId}`),
+                        axios.get(
+                            `https://jsonplaceholder.typicode.com/users/${userId}`
+                        ),
+                        axios.get(
+                            `https://jsonplaceholder.typicode.com/todos?userId=${userId}`
+                        ),
                     ]);
 
                     const userData = userResponse.data;
@@ -81,14 +94,16 @@ const UserTodosPage: React.FC = () => {
         )();
     };
 
-    const filteredTodos = todos.filter(todo => {
-        return filter === "all" || 
-               (filter === "completed" && todo.completed) ||
-               (filter === "pending" && !todo.completed);
+    const filteredTodos = todos.filter((todo) => {
+        return (
+            filter === "all" ||
+            (filter === "completed" && todo.completed) ||
+            (filter === "pending" && !todo.completed)
+        );
     });
 
-    const completedCount = todos.filter(todo => todo.completed).length;
-    const pendingCount = todos.filter(todo => !todo.completed).length;
+    const completedCount = todos.filter((todo) => todo.completed).length;
+    const pendingCount = todos.filter((todo) => !todo.completed).length;
 
     if (loading) {
         return (
@@ -146,7 +161,8 @@ const UserTodosPage: React.FC = () => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(250px, 1fr))",
                         gap: "15px",
                         marginTop: "20px",
                     }}
@@ -209,7 +225,14 @@ const UserTodosPage: React.FC = () => {
                         </h4>
                         <select
                             value={filter}
-                            onChange={(e) => setFilter(e.target.value as "all" | "completed" | "pending")}
+                            onChange={(e) =>
+                                setFilter(
+                                    e.target.value as
+                                        | "all"
+                                        | "completed"
+                                        | "pending"
+                                )
+                            }
                             style={{
                                 padding: "8px 12px",
                                 borderRadius: "6px",
@@ -259,7 +282,8 @@ const UserTodosPage: React.FC = () => {
                     <div
                         style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+                            gridTemplateColumns:
+                                "repeat(auto-fill, minmax(400px, 1fr))",
                             gap: "20px",
                         }}
                     >
@@ -278,12 +302,16 @@ const UserTodosPage: React.FC = () => {
                                     opacity: todo.completed ? 0.7 : 1,
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = "translateY(-2px)";
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(-2px)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 4px 12px rgba(0,0,0,0.15)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = "translateY(0)";
-                                    e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                                    e.currentTarget.style.transform =
+                                        "translateY(0)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 1px 3px rgba(0,0,0,0.1)";
                                 }}
                                 onClick={() => handleViewTodo(todo)}
                             >
@@ -293,8 +321,12 @@ const UserTodosPage: React.FC = () => {
                                         position: "absolute",
                                         top: "15px",
                                         right: "15px",
-                                        backgroundColor: todo.completed ? "#28a745" : "#ffc107",
-                                        color: todo.completed ? "white" : "#212529",
+                                        backgroundColor: todo.completed
+                                            ? "#28a745"
+                                            : "#ffc107",
+                                        color: todo.completed
+                                            ? "white"
+                                            : "#212529",
                                         borderRadius: "20px",
                                         padding: "4px 12px",
                                         fontSize: "12px",
@@ -333,7 +365,9 @@ const UserTodosPage: React.FC = () => {
                                         lineHeight: "1.4",
                                         paddingRight: "80px",
                                         paddingLeft: "40px",
-                                        textDecoration: todo.completed ? "line-through" : "none",
+                                        textDecoration: todo.completed
+                                            ? "line-through"
+                                            : "none",
                                     }}
                                 >
                                     {todo.title}
@@ -351,7 +385,13 @@ const UserTodosPage: React.FC = () => {
                                     <p style={{ margin: "0 0 5px 0" }}>
                                         🆔 Todo ID: {todo.id}
                                     </p>
-                                    <p style={{ margin: "0", fontSize: "12px", color: "#007bff" }}>
+                                    <p
+                                        style={{
+                                            margin: "0",
+                                            fontSize: "12px",
+                                            color: "#007bff",
+                                        }}
+                                    >
                                         Click to view details →
                                     </p>
                                 </div>
@@ -378,7 +418,8 @@ const UserTodosPage: React.FC = () => {
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(200px, 1fr))",
                         gap: "20px",
                     }}
                 >
@@ -394,11 +435,29 @@ const UserTodosPage: React.FC = () => {
                         <h3 style={{ margin: "0 0 10px 0", color: "#155724" }}>
                             ✅ Completed
                         </h3>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "bold", color: "#155724" }}>
+                        <p
+                            style={{
+                                margin: "0",
+                                fontSize: "24px",
+                                fontWeight: "bold",
+                                color: "#155724",
+                            }}
+                        >
                             {completedCount}
                         </p>
-                        <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#155724" }}>
-                            {todos.length > 0 ? Math.round((completedCount / todos.length) * 100) : 0}% of total
+                        <p
+                            style={{
+                                margin: "5px 0 0 0",
+                                fontSize: "14px",
+                                color: "#155724",
+                            }}
+                        >
+                            {todos.length > 0
+                                ? Math.round(
+                                      (completedCount / todos.length) * 100
+                                  )
+                                : 0}
+                            % of total
                         </p>
                     </div>
 
@@ -414,11 +473,29 @@ const UserTodosPage: React.FC = () => {
                         <h3 style={{ margin: "0 0 10px 0", color: "#856404" }}>
                             ⏳ Pending
                         </h3>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "bold", color: "#856404" }}>
+                        <p
+                            style={{
+                                margin: "0",
+                                fontSize: "24px",
+                                fontWeight: "bold",
+                                color: "#856404",
+                            }}
+                        >
                             {pendingCount}
                         </p>
-                        <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#856404" }}>
-                            {todos.length > 0 ? Math.round((pendingCount / todos.length) * 100) : 0}% of total
+                        <p
+                            style={{
+                                margin: "5px 0 0 0",
+                                fontSize: "14px",
+                                color: "#856404",
+                            }}
+                        >
+                            {todos.length > 0
+                                ? Math.round(
+                                      (pendingCount / todos.length) * 100
+                                  )
+                                : 0}
+                            % of total
                         </p>
                     </div>
 
@@ -434,10 +511,23 @@ const UserTodosPage: React.FC = () => {
                         <h3 style={{ margin: "0 0 10px 0", color: "#0c5460" }}>
                             📊 Total
                         </h3>
-                        <p style={{ margin: "0", fontSize: "24px", fontWeight: "bold", color: "#0c5460" }}>
+                        <p
+                            style={{
+                                margin: "0",
+                                fontSize: "24px",
+                                fontWeight: "bold",
+                                color: "#0c5460",
+                            }}
+                        >
                             {todos.length}
                         </p>
-                        <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#0c5460" }}>
+                        <p
+                            style={{
+                                margin: "5px 0 0 0",
+                                fontSize: "14px",
+                                color: "#0c5460",
+                            }}
+                        >
                             All todos
                         </p>
                     </div>
@@ -447,4 +537,4 @@ const UserTodosPage: React.FC = () => {
     );
 };
 
-export default UserTodosPage; 
+export default UserTodosPage;
